@@ -1,0 +1,9 @@
+.nav-bar {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: black;
+    height: 50px;
+    width: 100%;
+}

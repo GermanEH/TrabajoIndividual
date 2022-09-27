@@ -1,0 +1,56 @@
+import React, { useState, useEffect } from 'react';
+import { connect } from "react-redux";
+import PokemonCard from './PokemonCard.jsx';
+// import './Filter.css' 
+
+const OrderByName = ({pokemons}) => {
+
+    const [ordered, setOrdered] = useState([])
+
+    const handleOrderAsc = () => {
+        setOrdered(pokemons.sort(function(a,b) {
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0
+        }))
+    }
+
+    const handleOrderDesc = () => {
+        setOrdered(pokemons.sort(function(a,b) {
+            if(b.name < a.name) return -1;
+            if(b.name > a.name) return 1;
+            return 0
+        }))
+    }
+
+    return (
+        <div>
+            <div className="origin">
+                <button onClick={handleOrderAsc}>por nombre ascendente</button>
+                <button onClick={handleOrderDesc}>por nombre descendente</button>
+            </div>
+            <div className="pokemons">
+                    {ordered.map((p, i) => {
+                    return (
+                        <PokemonCard
+                    key={i}
+                    name={p.name}
+                    image={p.image}
+                    types={p.types}
+                    id={p.id}
+                    />)})}
+                    
+            </div>
+        </div>
+        
+    )
+}
+
+const MapStateToProps = (state) => {
+    return {
+        pokemons: state.pokemons,
+        types: state.types
+    }
+}
+
+export default connect (MapStateToProps)(OrderByName);

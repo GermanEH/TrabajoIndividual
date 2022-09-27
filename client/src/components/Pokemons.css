@@ -1,0 +1,17 @@
+.home {
+    display:flex;
+}
+
+.types {
+    width:20%;
+    flex-direction: column;
+    justify-content: right;
+}
+.pokemons {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    color:blue;
+    height: 50px;
+    width: 80%;
+}
