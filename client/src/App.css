@@ -2,9 +2,10 @@
   display:flex;
   flex-direction: column;
   text-align: center;
-  background-image: url("http://www.pokemonnext.it/wp-content/uploads/2020/10/pokemon-logo.png");
-  background-size:cover;
-  height:1000px;
+  background: url("../src/oJkBNgX.jpeg"), url("http://www.pokemonnext.it/wp-content/uploads/2020/10/pokemon-logo.png");
+  background-repeat: no-repeat, repeat;
+  background-size: 1400px 200px, 1300px 800px;
+  height:1600px;
 }
 
 .App-logo {
@@ -19,14 +20,13 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  margin-top:80px;
 }
 
 .App-link {

@@ -6,8 +6,8 @@ import SearchBar from './SearchBar.jsx';
 export default function NavBar({onSearch}) {
     return (
         <nav className='nav-bar'>
-            <Link to ='/home'>Home</Link>
-            <Link to ='/pokemon/create'>Create New Pokemon</Link>
+            <Link to ='/home' style={{ textDecoration: 'none' }}>Home</Link>
+            <Link to ='/pokemon/create' style={{ textDecoration: 'none' }}>Create New Pokemon</Link>
             <SearchBar />
         </nav>
     )

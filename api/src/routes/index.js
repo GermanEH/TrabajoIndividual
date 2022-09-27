@@ -12,7 +12,7 @@ const { Pokemon, Type, Pokemon_Type } = require('../db')
 
 async function getAllPokemons () {
     try {
-        let request = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=12', {
+        let request = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=40', {
             params: {
             _limit: 40
             }       //chequear al hacer el front si esto está bien

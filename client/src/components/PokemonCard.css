@@ -1,7 +1,9 @@
 .pokemon-card {
     color: red;
     background-color: beige;
-    width: 250px;
-    height:320px;
-    border: 5px solid black;
+    width: 200px;
+    height:225px;
+    border: 1px solid black;
+    border-radius:5px;
+    margin: 8px;
 }

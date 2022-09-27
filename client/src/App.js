@@ -27,8 +27,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1><Link to="/home">Henry Pokemon</Link></h1>
-      <NavBar />
+      <header className="App-header">
+        <h1><Link to="/home" style={{ textDecoration: 'none' , color: 'black'}}>Henry Pokemon</Link></h1>
+        <NavBar />
+      </header>
+      <body>
       <Route
         path='/pokemon/create'
         component={NewPokemon}
@@ -43,6 +46,7 @@ function App() {
         >
           <Pokemons/>
       </Route>
+      </body>
     </div> 
   );
 }

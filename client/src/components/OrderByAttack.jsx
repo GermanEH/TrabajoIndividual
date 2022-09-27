@@ -24,7 +24,7 @@ const OrderByAttack = ({pokemons}) => {
 
     return (
         <div>
-            <div className="origin">
+            <div className="attack">
                 <button onClick={handleOrderAsc}>por ataque ascendente</button>
                 <button onClick={handleOrderDesc}>por ataque descendente</button>
             </div>
