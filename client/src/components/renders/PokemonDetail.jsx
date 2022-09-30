@@ -1,70 +1,75 @@
 import React, {useEffect} from 'react';
 import { connect } from "react-redux";
 import './PokemonDetail.css';
-import { getPokemon } from "../redux/actions"
+import { getPokemonDetail } from "../../redux/actions"
+import Loader from "./Loader.jsx"
 
 const PokemonDetail = (props) => {
 
     const pokemonId = props.match.params.id
-    
+    console.log(props)
     useEffect(() => {
-        props.getPokemon(pokemonId)
+        props.getPokemonDetail(pokemonId)
     }, [])
 
     return (
         <div>
-            <div className="pokemon-container">
+            <div>
+                {(props.pokemonDetail)?
+                <div className="pokemon-container">
                 <div className="pokemon-head">
                     <h3>
-                        {props.pokemons.name}
+                        {props.pokemonDetail.name}
                     </h3>
                     <div>
-                        <img src={props.pokemons.image} alt="not found" height='500'/>
+                        <img src={props.pokemonDetail.image} alt="not found" height='500'/>
                     </div>
                 </div>
                 <div className="pokemon-info">
                     <div className="pokemon-data">
                         <div className="pokemon-stat">
-                            Types: {props.pokemons.types}
+                            Types: {props.pokemonDetail.types}
                         </div>
                         <div className="pokemon-stat">
-                            Id: {props.pokemons.id}
+                            Id: {props.pokemonDetail.id}
                         </div>
                         <div className="pokemon-stat">
-                            Hp: {props.pokemons.hp}
+                            Hp: {props.pokemonDetail.hp}
                         </div>
                         <div className="pokemon-stat">
-                            Attack: {props.pokemons.attack}
+                            Attack: {props.pokemonDetail.attack}
                         </div>
                         <div className="pokemon-stat">
-                            Defense: {props.pokemons.defense}
+                            Defense: {props.pokemonDetail.defense}
                         </div>
                         <div className="pokemon-stat">
-                            Speed: {props.pokemons.speed}
+                            Speed: {props.pokemonDetail.speed}
                         </div>
                         <div className="pokemon-stat">
-                            Weight: {props.pokemons.weight}
+                            Weight: {props.pokemonDetail.weight}
                         </div>
                         <div className="pokemon-stat">
-                            Height: {props.pokemons.height}
+                            Height: {props.pokemonDetail.height}
                         </div>
                     </div>
                 </div>
             </div>
+            : 
+            <Loader/>}
+            </div>
         </div>
-        
     )
 }  
 
 const MapStateToProps = (state) => {
     return {
-        pokemons: state.pokemons
+        pokemonDetail: state.pokemonDetail
     }
 }
 
 const MapDispatchToProps = (dispatch) => {
     return {
-        getPokemon: (pokemon) => dispatch(getPokemon(pokemon))
+        getPokemonDetail: (pokemon) => dispatch(getPokemonDetail(pokemon))
     }
 }
 

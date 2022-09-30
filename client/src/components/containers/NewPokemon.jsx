@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import { createPokemon, getAllPokemons, getAllTypes, addCapture } from '../redux/actions'
+import { createPokemon, getAllPokemons, getAllTypes, addCapture } from '../../redux/actions'
 import './NewPokemon.css'
 // import Validate, {setErrors} from './Validations.jsx'
 import { connect } from "react-redux";
 import { useEffect } from 'react';
-import logo from '../assets/Ash_Ketchum_BW.webp'
+import logo from '../../assets/Ash_Ketchum_BW.webp'
 
 const NewPokemon = ({ createPokemon, getAllTypes, getAllPokemons, addCapture, types, pokemons }) => {
     const initialForm = {
@@ -24,7 +24,6 @@ const NewPokemon = ({ createPokemon, getAllTypes, getAllPokemons, addCapture, ty
     const [idsExistentes, setIdsExistentes] = useState([])
     const [namesExistentes, setNamesExistentes] = useState([])
     const [errors, setErrors] = useState({})
-    const [checked, setChecked] = useState(false)
 
     useEffect(() => {const getPokemons = async () => {await getAllPokemons()}; getPokemons()}, [])
     useEffect(() => {const getTypes = async () => {await getAllTypes()}; getTypes()}, [])
@@ -110,52 +109,6 @@ const NewPokemon = ({ createPokemon, getAllTypes, getAllPokemons, addCapture, ty
     const handleSubmit = (e) => {
         setInput(input.types=selectedTypes)
         e.preventDefault();
-        if(!input.name.trim()) {
-            alert("El nombre es requerido");
-            return
-        }
-        if(!input.id) {
-            alert("El id es requerido")
-            return
-        }
-        if(input.name.match(/\d/g)){
-            alert("El nombre no puede contener números");
-            return
-        }
-        if(namesExistentes.includes(input.name)){
-            alert("Nombre existente");
-            return
-        }
-        let id = 950
-        id++
-        if(idsExistentes.includes(parseInt(input.id)) || input.id < id){
-            alert(`Id existente (debe ser mayor a ${id})`);
-            return
-        }
-        if(input.hp < 1 || input.attack > 1000 || input.hp.match(/[a-b]/i)){
-            alert("Puntos de golpe inválidos (debe ser entre 1 y 1000)")
-            return
-        }
-        if(input.attack < 1 || input.attack > 1000 || input.attack.match(/[a-b]/i)){
-            alert("Ataque inválido (debe ser entre 1 y 1000)")
-            return
-        }
-        if(input.defense < 1 || input.defense > 1000 || input.defense.match(/[a-b]/i)){
-            alert("Defensa inválida (debe ser entre 1 y 1000)")
-            return
-        }
-        if(input.speed < 1 || input.speed > 1000 || input.speed.match(/[a-b]/i)){
-            alert("Velocidad inválida (debe ser entre 1 y 1000)")
-            return
-        }
-        if(input.height < 1 || input.height > 1000 || input.height.match(/[a-b]/i)){
-            alert("Altura inválida (debe ser entre 1 y 1000)")
-            return
-        }
-        if(input.weight < 1 || input.weight > 1000 || input.weight.match(/[a-b]/i)){
-            alert("Peso inválido (debe ser entre 1 y 1000)")
-            return
-        }
         if(!input.types) {
             alert("Se requiere al menos un type")
             return

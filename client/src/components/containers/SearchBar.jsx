@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
 import { connect } from "react-redux";
-import { getPokemon } from '../redux/actions'
-import { Link } from "react-router-dom";
+import { getPokemonCard } from '../../redux/actions'
 
-const SearchBar = ({getPokemon}) => {
+const SearchBar = ({getPokemonCard}) => {
     const [newPokemon, setNewPokemon] = useState("")
     return (
         <div>
             <form onSubmit={(e) => {
             e.preventDefault();
-            getPokemon(newPokemon);
+            getPokemonCard(newPokemon);
+            setNewPokemon("")
             }}>
                 <input 
                 type="text"
@@ -24,13 +24,13 @@ const SearchBar = ({getPokemon}) => {
 
 const MapStateToProps = (state) => {
     return {
-        pokemon: state.pokemons
+        pokemons: state.pokemons
     }
 }
 
 const MapDispatchToProps = (dispatch) => {
     return {
-        getPokemon: (pokemon) => dispatch(getPokemon(pokemon))
+        getPokemonCard: (pokemon) => dispatch(getPokemonCard(pokemon))
     }
 }
 

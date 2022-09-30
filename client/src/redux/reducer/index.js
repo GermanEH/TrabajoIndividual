@@ -1,8 +1,10 @@
-import { GET_ALL_POKEMONS, GET_ALL_TYPES, GET_POKEMON, CREATE_POKEMON, FILTER_POKEMONS, FILTER_POKEMONS_BY_TYPE, FILTER_POKEMONS_BY_ORIGIN, ADD_POKEMON_CAPTURED, REMOVE_POKEMON_CAPTURED } from '../actions/index'
+import { GET_ALL_POKEMONS, GET_ALL_TYPES, GET_POKEMON_CARD, GET_POKEMON_DETAIL, CREATE_POKEMON, ADD_POKEMON_CAPTURED, REMOVE_POKEMON_CAPTURED } from '../actions/index'
 
 const initialState = {
     pokemons: [],
     types: [],
+    pokemonCard: [],
+    pokemonDetail: [],
     pokemonsCaptured: [],
 }
 
@@ -14,10 +16,15 @@ export default function rootReducer (state = initialState, action) {
                 ...state,
                 pokemons: action.payload
             }
-        case GET_POKEMON:
+        case GET_POKEMON_CARD:
             return  {
                 ...state,
-                pokemons: action.payload
+                pokemonCard: action.payload
+            }
+        case GET_POKEMON_DETAIL:
+            return  {
+                ...state,
+                pokemonDetail: action.payload
             }
         case GET_ALL_TYPES:
             return  {
@@ -28,11 +35,6 @@ export default function rootReducer (state = initialState, action) {
             return  {
                 ...state,
                 pokemons: [...state.pokemons, action.payload]
-            }
-        case FILTER_POKEMONS_BY_ORIGIN:
-            return  {
-                ...state,
-                pokemons: state.pokemons.filter(pokemon => pokemon.id === action.payload)
             }
         case ADD_POKEMON_CAPTURED:
             return {

@@ -5,12 +5,12 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('pokemon', {
     id: {
-      type: DataTypes.INTEGER, // REVISAR ESTO           //PODRÍA USAR ID INTEGER MIN: 950
+      type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull:false,
       unique: true,
       validate: {
-        min: 951          //también puedo hacer un "notIn" o un UUID  -->   investigar
+        min: 951         
       }
     },    
     name: {
@@ -23,28 +23,55 @@ module.exports = (sequelize) => {
       }
     },
     hp: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      isInt: true,
+      validate: {
+        min: 1,
+        max: 1000
+      }
     },
     attack: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      isInt: true,
+      validate: {
+        min: 1,
+        max: 1000
+      }
     }, 
     defense: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      isInt: true,
+      validate: {
+        min: 1,
+        max: 1000
+      }
     }, 
     speed: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      isInt: true,
+      validate: {
+        min: 1,
+        max: 1000
+      }
     }, 
     height: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      isInt: true,
+      validate: {
+        min: 1,
+        max: 1000
+      }
     }, 
     weight: {
-      type: DataTypes.FLOAT,
-
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 1,
+        max: 1000
+      }
+    },
+    image: {
+      type: DataTypes.STRING,
+      isUrl: true,
     }
   })
 }

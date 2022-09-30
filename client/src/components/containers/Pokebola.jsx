@@ -1,45 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from "react-redux";
-import PokemonCard from "./PokemonCard.jsx";
-// import Checkbox from './Checkbox.jsx'
-import Loader from './Loader.jsx'
-// import Message from './Message.jsx'
-import './Pokemons.css' 
-import { getAllPokemons, getAllTypes, filterPokemons, addCapture, } from '../redux/actions/index.js'
-import logo from '../assets/TfCK.gif'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import Filters from '../renders/Filters.jsx'
+import Sorters from '../renders/Sorters.jsx'
+import Loader from '../renders/Loader.jsx'
+import PokemonCard from '../renders/PokemonCard';
+import { getAllTypes, removeCapture } from '../../redux/actions/index.js'
 
-const Pokemons = ({getAllPokemons, getAllTypes,
-    filterPokemons, pokemons, types, addCapture}) => {            //hice destructuring porque me lo recomendaba el comment al useEffect (estaba teniendo un loop infinito)
+const Pokebola = ({ pokemonsCaptured, getAllTypes, removeCapture, types }) => {
 
     const [filtered, setFiltered] = useState([])
     const [render, setRender] = useState(false)
     const [currentPage, setCurrentPage] = useState(0)
     const [selectedTypes, setSelectedTypes] = useState(new Set())
     // const [error, setError] = useState(null)
-    // const [loading, setLoading] = useState(false)
+    const [capturedForFilter, setCapturedForFilter] = useState([])
 
-    useEffect(() => {
-        const getPokemons = async () => {await getAllPokemons()}; 
-        getPokemons();
-    }, [])
-    useEffect(() => {setFiltered(pokemons)}, [pokemons])
+    useEffect(() => {setCapturedForFilter(pokemonsCaptured)}, [])
+    useEffect(() => {setFiltered(pokemonsCaptured)}, [pokemonsCaptured])
     useEffect(() => {getAllTypes()}, [])
-
-    //me traigo el array de types
-    //declaro un set
-    //agrego el type checkeado al set, o lo elimino si descheckeo
-    //filtro cada arreglo types de cada pokemon con el set de types. solo renderizo los que tienen todo el set
-    //cada vez que elimino un check, vuelvo a renderizar los que tienen el set
 
     const handleFilterByTypes = (typeName) => {
         if (selectedTypes.has(typeName)) {
             setSelectedTypes(selectedTypes.delete(typeName))
             if(selectedTypes.size > 0) {
                 for (const type of selectedTypes) {
-                    setFiltered(pokemons.filter(p => p.types.includes(type)))
+                    setFiltered(pokemonsCaptured.filter(p => p.types.includes(type)))
                 }
             } else { 
-                    getAllPokemons(); setRender(true)}
+                    return capturedForFilter}
         } else {
             setSelectedTypes(selectedTypes.add(typeName))
             for (const type of selectedTypes) {
@@ -115,36 +103,18 @@ const Pokemons = ({getAllPokemons, getAllTypes,
         if (currentPage > 0)
         setCurrentPage(currentPage - 12)
     }
-
-    // <Checkbox toggleTypes={(type) => handleFilterByTypes(type.name)} type={type.name} key={i}/>
-
-
-    // {error && <Message />}
-
+    
     return (
         <div className="home">
             <div className="column-left">
-                    <h3>Filtrar por...</h3>
-                    <h4>Tipos</h4>
-                <div className="types">
-                    {(types?.map((type, i) => <div className="type"><input type="checkbox" onChange={() => handleFilterByTypes(type.name)} key={i}></input>{type.name}</div>))}
-                </div>
-                    <h4>Origen</h4>
-                    <div className="origin">
-                        <button onClick={() => handleFilterByOrigin ('original')} key={1}>original</button>
-                        <button onClick={() => handleFilterByOrigin ('created')} key={2}>created</button>
-                    </div>
+                    {types && <Filters types={types} handleFilterByTypes={handleFilterByTypes} handleFilterByOrigin={handleFilterByOrigin}/>}
             </div>
             <div className="home-body">
-                <div className="pokemons">
-                    {(filtered.length===0)?
-                    <div>
-                        <img src={logo} alt="loading..." widht="150" height="150"/>
-                        <br></br>
-                        <p>Cargando...</p>
-                    </div>
-                    :
-                    slicedPokemons().map((p, i) => {
+                    <div className="pokemons">
+                        {(filtered.length===0)?
+                        <Loader/>
+                        :
+                        slicedPokemons().map((p, i) => {
                         return (
                             <PokemonCard
                         key={i}
@@ -152,26 +122,16 @@ const Pokemons = ({getAllPokemons, getAllTypes,
                         image={p.image}
                         types={p.types}
                         id={p.id}
-                        addCapture={addCapture}
+                        removeCapture={removeCapture}
                         />)})}
-                </div>
+                    </div>
                 <div className="footer">
                     <button className="pagination" onClick={() => prevPage()}>Anteriores</button>
                     <button className="pagination" onClick={() => nextPage()}>Siguientes</button>
                 </div>
             </div>
             <div className="column-right">
-                <h3>Ordenar por...</h3>
-                <h4>Nombre</h4>
-                    <div className="origin">
-                        <button onClick={handleOrderAscByName}>por nombre ascendente</button>
-                        <button onClick={handleOrderDescByName}>por nombre descendente</button>
-                    </div>
-                <h4>Ataque</h4>
-                    <div className="attack">
-                        <button onClick={handleOrderAscByAttack}>por ataque ascendente</button>
-                        <button onClick={handleOrderDescByAttack}>por ataque descendente</button>
-                    </div>
+                <Sorters handleOrderAscByName={handleOrderAscByName} handleOrderDescByName={handleOrderDescByName} handleOrderAscByAttack={handleOrderAscByAttack} handleOrderDescByAttack={handleOrderDescByAttack}/>
             </div>
         </div>
     )
@@ -179,18 +139,16 @@ const Pokemons = ({getAllPokemons, getAllTypes,
 
 const MapStateToProps = (state) => {
     return {
-        pokemons: state.pokemons,
+        pokemonsCaptured: state.pokemonsCaptured,
         types: state.types
     }
 }
 
 const MapDispatchToProps = (dispatch) => {
     return {
-        getAllPokemons: () => dispatch(getAllPokemons()),
         getAllTypes: () => dispatch(getAllTypes()),
-        addCapture: (name) => dispatch(addCapture(name)),
-        filterPokemons: (filters) => dispatch(filterPokemons(filters))
+        removeCapture: (name) => dispatch(removeCapture(name)),
     }
 }
 
-export default connect(MapStateToProps, MapDispatchToProps)(Pokemons);            //me genera UNA NUEVA función getPokemons (que en clases va con this) y estoy exportando el componente ya inyectándole las propiedades
+export default connect(MapStateToProps, MapDispatchToProps)(Pokebola);

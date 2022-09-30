@@ -2,9 +2,9 @@ import React from 'react';
 import './PokemonCard.css';
 import { Link } from "react-router-dom";
 
-export default function PokemonCard ({name, image, types, id, addCapture}) {
+export default function PokemonCard ({name, image, attack, types, id, addCapture}) {
 
-    let pokemonData = {name, image, types, id}
+    let pokemonData = {name, image, attack, types, id}
     let captured = false
     function handleCapture(){
         if (captured === false) {captured = true}

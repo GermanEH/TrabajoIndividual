@@ -1,74 +1,79 @@
 import axios from 'axios'
 
 export const GET_ALL_POKEMONS = 'GET_ALL_POKEMONS';
+export const GET_ALL_POKEMONS_CREATED = 'GET_ALL_POKEMONS_CREATED';
 export const GET_ALL_TYPES = 'GET_ALL_TYPES'
-export const GET_POKEMON = 'GET_POKEMON'
+export const GET_POKEMON_DETAIL = 'GET_POKEMON_DETAIL'
+export const GET_POKEMON_CARD = 'GET_POKEMON_CARD'
 export const CREATE_POKEMON = 'CREATE_POKEMON'
 export const FILTER_POKEMONS_BY_TYPE = 'FILTER_POKEMONS_BY_TYPE'
 export const FILTER_POKEMONS_BY_ORIGIN = 'FILTER_POKEMONS_BY_ORIGIN'
 export const ADD_POKEMON_CAPTURED = 'ADD_POKEMON_CAPTURED'
 export const REMOVE_POKEMON_CAPTURED = 'REMOVE_POKEMON_CAPTURED'
 
-//AGREGAR CONDICIONALES: SI YA TENGO UN POKEMON, NO HACER AXIOS DEVUELTA
-
 export function getAllPokemons () {
     return function (dispatch) {
         axios.get('http://localhost:3001/pokemons')
-        .then(response => response.data)                                  //¿ES NECESARIO?
+        .then(response => response.data)                                  
         .then(d => dispatch({type: GET_ALL_POKEMONS, payload: d}))
-        .catch(e => console.log(e))                                       //COMPLETAR ESTO
+        .catch(e => console.log(e))                                       
+    }
+}
+export function getAllPokemonsCreated () {
+    return function (dispatch) {
+        axios.get('http://localhost:3001/pokemonsCreated')
+        .then(response => response.data)                                  
+        .then(d => dispatch({type: GET_ALL_POKEMONS_CREATED, payload: d}))
+        .catch(e => console.log(e))                                       
     }
 }
 
-// function mapTypes (data) {
-//     let typesMap = new Map();
-//     let typesNames = data.map(t => t.name)
-//     for (const name of typesNames) typesMap.set(name, false)
-//     return typesMap
-// }
-
-// export function getAllTypesMap () {
-//     return function (dispatch) {
-//         axios.get('http://localhost:3001/types')
-//         .then(response => response.data)                                  //¿ES NECESARIO?
-//         .then(data => mapTypes(data))
-//         .then(data => dispatch({type: GET_ALL_TYPES_MAP, payload: data}))
-//         .catch(e => console.log(e))
-//     }
-// }
-
 export function getAllTypes () {
-    return function (dispatch) {
-        axios.get('http://localhost:3001/types')
+    return async function (dispatch) {
+        await axios.get('http://localhost:3001/types')
         .then(response => response.data)
         .then(data => dispatch({type: GET_ALL_TYPES, payload: data}))
         .catch(e => console.log(e))
     }
 }
 
-// const pokemon = r.data
-//     setPokemons(oldPokemons => [...oldPokemons, ...pokemon])            //NO ENTIENDO PORQUÉ TUVE QUE HACER SPREAD DE TYPE tambien
-
 //  id (por params) de API   					pokemons 1ro
 //  id (por params) de Pokemon 		    pokemons 1ro
 //  name (por query) de API						OK
 //  name (por query) de Pokemon				formulario de creación 1ro
 
-export function getPokemon (pokemon) {
+export function getPokemonDetail (pokemon) {
     return function (dispatch) {
         if(isNaN(pokemon)) {
             axios.get(`http://localhost:3001/pokemons/?name=${pokemon}`)
-            .then(response => response.data)                              //¿ES NECESARIO?
-            .then(data => dispatch({type: GET_POKEMON, payload: data}))
+            .then(response => response.data)                              
+            .then(data => dispatch({type: GET_POKEMON_DETAIL, payload: data}))
 		} else if (typeof parseInt(pokemon) === 'number'){
             axios.get(`http://localhost:3001/pokemons/${pokemon}`)
-            .then(response => response.data)                              //¿ES NECESARIO?
-            .then(data => dispatch({type: GET_POKEMON, payload: data}))
+            .then(response => response.data)                             
+            .then(data => dispatch({type: GET_POKEMON_DETAIL, payload: data}))
             .catch(e => console.log(e))
         } else {
 			alert('Pokemon not found')
         }
 	} 
+}
+
+export function getPokemonCard (pokemon) {
+    return function (dispatch) {
+        if(pokemon) {
+            axios.get(`http://localhost:3001/pokemons/?name=${pokemon}`)
+            .then(response => [response.data])                              
+            .then(data => dispatch({type: GET_POKEMON_CARD, payload: data}))
+        } else if (typeof parseInt(pokemon) === 'number'){
+            axios.get(`http://localhost:3001/pokemons/${pokemon}`)
+            .then(response => [response.data])                             
+            .then(data => dispatch({type: GET_POKEMON_CARD, payload: data}))
+            .catch(e => console.log(e))
+        } else {
+			alert('Pokemon not found')
+        }
+    }
 }
 
 export function createPokemon(pokemon) {
@@ -84,7 +89,6 @@ export function createPokemon(pokemon) {
         height: pokemon.height,
         types: pokemon.types,
     }
-    console.log(newPokemon)
     return function (dispatch) {
         if(pokemon) {
             var res = axios.post('http://localhost:3001/pokemons', newPokemon)
@@ -96,41 +100,65 @@ export function createPokemon(pokemon) {
     }
 }
 
-export function filterByTypes([selectedTypes, filtered]) {
-    for (const type of selectedTypes) {
-        for(const types of filtered) {
-            if(types.includes(type)) continue;
-            else return false;
-        }
+// export function handleFilterByTypes (typeName) {
+//     if (selectedTypes.has(typeName)) {
+//         setSelectedTypes(selectedTypes.delete(typeName))
+//         if(selectedTypes.size > 0) {
+//             for (const type of selectedTypes) {
+//                 setFiltered(pokemons.filter(p => p.types.includes(type)))
+//             }
+//         } else { 
+//                 getAllPokemons(); setRender(true)}
+//     } else {
+//         setSelectedTypes(selectedTypes.add(typeName))
+//         for (const type of selectedTypes) {
+//             setFiltered(filtered.filter(p => p.types.includes(type))) 
+//         }
+//     } 
+//     setSelectedTypes(selectedTypes)
+// }
 
-    } return true;
-}
+// export function handleFilterByOrigin (newOrigin) {
+//     if (newOrigin === 'original') {
+//         let filterPokemons = filtered.filter(p => p.id < 950)
+//         setFiltered(filterPokemons)
+//     } else {
+//         let filterPokemons = filtered.filter(p => p.id > 950)
+//         setFiltered(filterPokemons)
+//     }
+// }
 
+// export function handleOrderAscByAttack () {
+//     setFiltered(filtered.sort(function(a,b) {
+//         if(a.attack < b.attack) return -1;
+//         if(a.attack > b.attack) return 1;
+//         return 0
+//     }))
+// }
 
-export function filterPokemons(arrCompuesto) {
-    return function(dispatch){
-        let typesNames = arrCompuesto[0]
-        let typeFilters = arrCompuesto[1]
-        if(typesNames && typeFilters) {
-            console.log('entré')
-            for(const valorABuscar of typeFilters) {
-                if(typesNames.includes(valorABuscar) === false){
-                    console.log('entré1')
-                    return dispatch({
-                        type:FILTER_POKEMONS_BY_ORIGIN,
-                        payload:typeFilters
-                    })
-                } else {
-                    console.log('entré2')
-                    return dispatch({
-                        type:FILTER_POKEMONS_BY_TYPE,
-                        payload:typeFilters
-                    })
-            }
-        }
-        }
-    }
-}
+// export function handleOrderDescByAttack () {
+//     setFiltered(filtered.sort(function(a,b) {
+//         if(b.attack < a.attack) return -1;
+//         if(b.attack > a.attack) return 1;
+//         return 0
+//     }))
+// }
+
+// export function handleOrderAscByName () {
+//     setFiltered(filtered.sort(function(a,b) {
+//         if(a.name < b.name) return -1;
+//         if(a.name > b.name) return 1;
+//         return 0
+//     }))
+// }
+
+// export function handleOrderDescByName () {
+//     setFiltered(filtered.sort(function(a,b) {
+//         if(b.name < a.name) return -1;
+//         if(b.name > a.name) return 1;
+//         return 0
+//     }))
+// }
 
 export function addCapture (payload) {
     return {

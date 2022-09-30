@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const { Router, response } = require('express');
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 
@@ -7,22 +7,14 @@ const router = Router();
 
 const { Pokemon, Type, Pokemon_Type } = require('../db')
 
-// Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
-
 async function getAllPokemons () {
     try {
-        let request = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=40', {
-            params: {
-            _limit: 40
-            }       //chequear al hacer el front si esto está bien
-        })
+        let request = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=40')
         let allPokemons = await request.data.results.map(async p => {
             let subrequest = await axios.get(`${p.url}`)
             let i = subrequest.data
             let types = await i.types.map(t => t.type.name)
             let attack = await i.stats.filter(s => s.stat.name === 'attack')
-            console.log(attack[0].base_stat)
             return {
             name: p.name,
             id: i.id,
@@ -32,8 +24,7 @@ async function getAllPokemons () {
         }})
         return Promise.all(allPokemons);
     } catch (error) {
-        console.log(error)
-        return [];
+        return (error);
     }
 }
 
@@ -64,7 +55,7 @@ async function getPokemon (parameter) {
                         let p = local[0].dataValues
                         let types = await p.types.map(t => t.type.name)
                         let pokemon = {
-                        // image: p.sprites.other['official-artwork'].front_default,
+                        image: p.image,
                         name: p.name,
                         types: types,
                         include: Pokemon_Type,
@@ -96,7 +87,6 @@ async function getPokemon (parameter) {
                     return pokemon;
             }
         } catch (error) {
-            console.log(error)
             return 'Pokemon not found';
         }    
 }
@@ -108,13 +98,11 @@ async function getTypes () {
             const {name} = t
             let subrequest = await axios.get(`${t.url}`)
             let id = subrequest.data.id
-            console.log({id, name})
             let newType = await Type.create({id, name})
             // return {newType}
         })
         return Promise.all(types);
     } catch (error) {
-        console.log(error);
         return 'Types not found';
     }
 }
@@ -136,7 +124,7 @@ router.get('/pokemons', async (req, res) => {
                 const response = await getPokemon(name)
                 return res.status(200).json(response)
             }
-                const response = await getAllPokemons() //CÓMO INCORPORO EL LÍMITE DE 40?
+                const response = await getAllPokemons()
                 return res.status(200).json(response)
         } catch (error) {
             console.log(error)
@@ -145,45 +133,49 @@ router.get('/pokemons', async (req, res) => {
 })
 
 router.post('/pokemons', async (req, res) => {
-    const {image, id, name, hp, attack, defense, speed, height, weight} = req.body
+
+    const {image, name, id, hp, attack, defense, speed, height, weight, types} = req.body
+    if(!name || !id) {
+        return res
+        .status(STATUS_USER_ERROR)
+        .json({error: "No se recibieron los parámetros necesarios para crear el Pokemon"})
+    }
     try {
         const response = await Pokemon.create({
                 image,
-                id, 
                 name, 
                 hp, 
                 attack, 
                 defense, 
                 speed, 
                 height, 
-                weight
-                
+                weight,
+                id,
+                types,
         })
         return res.status(200).json('Pokemon created successfully')
-//ACÁ USAMOS DEFAULT? O EL CREATE NO LO NECESITA=
     } catch (error) {
         console.log(error)
-        res.status(404).send('Missing name')
+        res.status(404).send(error)
     }
 })
 
 router.get('/types', async (req, res) => {
     try {
-        const result = await Type.findAll()
-        console.log(result.map(r => r.id))
-        return res.status(200).json(result)
-        // if(await Type.findAll() === []) 
-        // {
-        //     await getTypes()
-        //     const result = await Type.findAll()
-        //     return res.status(200).json(result)
-        // } 
-        // else 
-        // {
-        //     const result = await Type.findAll()
-        //     return res.status(200).json(result)
-        // }
+        let result = await Type.findAll()
+        if(result.length === 0) 
+        {
+            await getTypes()
+            const result = await Type.findAll()
+            return res.status(200).json(result)
+        } 
+        else 
+        {
+            const result = await Type.findAll()
+            return res.status(200).json(result)
+        }
     } catch (error) {
+        console.log(error)
         return res.status(404).send(error)
     }
 })
