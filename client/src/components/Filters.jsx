@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
 import PokemonCard from './PokemonCard.jsx';
 // import './Filter.css' 
-import { getAllTypesArr } from '../redux/actions/index.js'
+import { getAllTypes } from '../redux/actions/index.js'
 
-const Filters = ({getAllTypesArr, pokemons, types}) => {
+const Filters = ({getAllTypes, pokemons, types}) => {
 
     const [filtered, setFiltered] = useState([])
 
-    useEffect(() => {getAllTypesArr()}, [])
+    useEffect(() => {getAllTypes()}, [])
 
     const handleFilterByType = (newType) => {
         let filterPokemons = pokemons.filter(p => p.types.includes(newType))
@@ -65,7 +65,7 @@ const MapStateToProps = (state) => {
 
 const MapDispatchToProps = (dispatch) => {
     return {
-        getAllTypes: () => dispatch(getAllTypesArr())
+        getAllTypes: () => dispatch(getAllTypes())
     }
 }
 

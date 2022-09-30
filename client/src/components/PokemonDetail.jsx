@@ -4,7 +4,7 @@ import './PokemonDetail.css';
 import { getPokemon } from "../redux/actions"
 
 const PokemonDetail = (props) => {
-    console.log(props.match.params.id)
+
     const pokemonId = props.match.params.id
     
     useEffect(() => {

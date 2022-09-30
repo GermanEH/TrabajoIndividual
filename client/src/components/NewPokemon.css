@@ -1,7 +1,62 @@
-.pokemons {
+.newPokemon {
     display:flex;
+    flex-direction: row;
     justify-content: center;
-    color:blue;
-    height: 100px;
-    width: auto;
+    flex-wrap: wrap;
+    margin-top:80px;
+}
+
+.form {
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items:center;
+    width:60%;
+}
+
+.column-left{
+    width:30%;
+}
+
+.red_table {
+    background-color:red;
+    border: black solid 5px;
+    margin-bottom:40px;
+}
+.pokemonItem {
+    padding: 10px;
+    height: 20px;
+    color: white;
+    font-size: large;
+    font-weight: bolder;
+}
+
+.types {
+    justify-content: center;
+    color:black
+}
+
+.empty {
+    height:15px;
+}
+
+.validator {
+    font-weight:bold;
+    font-size:10px;
+}
+
+.button-disabled {
+    background-color:grey;
+    color:black;
+    border-radius:2px;
+    height:60px;
+    width:180px
+}
+
+.button {
+    background-color:rgb(33, 33, 233);
+    color:white;
+    border-radius:2px;
+    height:60px;
+    width:180px
 }

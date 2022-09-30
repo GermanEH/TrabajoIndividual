@@ -1,12 +1,13 @@
 import axios from 'axios'
 
 export const GET_ALL_POKEMONS = 'GET_ALL_POKEMONS';
-export const GET_ALL_TYPES_MAP = 'GET_ALL_TYPES_MAP'
-export const GET_ALL_TYPES_ARR = 'GET_ALL_TYPES_ARR'
+export const GET_ALL_TYPES = 'GET_ALL_TYPES'
 export const GET_POKEMON = 'GET_POKEMON'
 export const CREATE_POKEMON = 'CREATE_POKEMON'
 export const FILTER_POKEMONS_BY_TYPE = 'FILTER_POKEMONS_BY_TYPE'
 export const FILTER_POKEMONS_BY_ORIGIN = 'FILTER_POKEMONS_BY_ORIGIN'
+export const ADD_POKEMON_CAPTURED = 'ADD_POKEMON_CAPTURED'
+export const REMOVE_POKEMON_CAPTURED = 'REMOVE_POKEMON_CAPTURED'
 
 //AGREGAR CONDICIONALES: SI YA TENGO UN POKEMON, NO HACER AXIOS DEVUELTA
 
@@ -19,28 +20,28 @@ export function getAllPokemons () {
     }
 }
 
-function mapTypes (data) {
-    let typesMap = new Map();
-    let typesNames = data.map(t => t.name)
-    for (const name of typesNames) typesMap.set(name, false)
-    return typesMap
-}
+// function mapTypes (data) {
+//     let typesMap = new Map();
+//     let typesNames = data.map(t => t.name)
+//     for (const name of typesNames) typesMap.set(name, false)
+//     return typesMap
+// }
 
-export function getAllTypesMap () {
-    return function (dispatch) {
-        axios.get('http://localhost:3001/types')
-        .then(response => response.data)                                  //¿ES NECESARIO?
-        .then(data => mapTypes(data))
-        .then(data => dispatch({type: GET_ALL_TYPES_MAP, payload: data}))
-        .catch(e => console.log(e))
-    }
-}
+// export function getAllTypesMap () {
+//     return function (dispatch) {
+//         axios.get('http://localhost:3001/types')
+//         .then(response => response.data)                                  //¿ES NECESARIO?
+//         .then(data => mapTypes(data))
+//         .then(data => dispatch({type: GET_ALL_TYPES_MAP, payload: data}))
+//         .catch(e => console.log(e))
+//     }
+// }
 
-export function getAllTypesArr () {
+export function getAllTypes () {
     return function (dispatch) {
         axios.get('http://localhost:3001/types')
         .then(response => response.data)
-        .then(data => dispatch({type: GET_ALL_TYPES_ARR, payload: data}))
+        .then(data => dispatch({type: GET_ALL_TYPES, payload: data}))
         .catch(e => console.log(e))
     }
 }
@@ -70,12 +71,20 @@ export function getPokemon (pokemon) {
 	} 
 }
 
-
-//      AGREGAR UN LOADING
-
-
 export function createPokemon(pokemon) {
-    let newPokemon = {image: pokemon.image, name: pokemon.name, id: pokemon.id, attack: pokemon.attack, defense:pokemon.defense, speed: pokemon.speed, weight: pokemon.weight, height: pokemon.height}
+    let newPokemon = {
+        image: pokemon.image, 
+        name: pokemon.name, 
+        id: pokemon.id, 
+        hp: pokemon.hp, 
+        attack: pokemon.attack, 
+        defense:pokemon.defense, 
+        speed: pokemon.speed, 
+        weight: pokemon.weight, 
+        height: pokemon.height,
+        types: pokemon.types,
+    }
+    console.log(newPokemon)
     return function (dispatch) {
         if(pokemon) {
             var res = axios.post('http://localhost:3001/pokemons', newPokemon)
@@ -86,21 +95,17 @@ export function createPokemon(pokemon) {
         } 
     }
 }
-export function arrComparison(arrCompuesto){
-    console.log(arrCompuesto)
-    let filters = arrCompuesto[0]
-    let pokemon = arrCompuesto[1]
-    console.log(filters)
-    console.log(pokemon)
-    for (let i = 0; i < filters.length; i++) {
-        console.log(pokemon.types)
-        console.log(filters[i])
-        console.log(pokemon.types.includes(filters[i]))
-        if(pokemon.types.includes(filters[i])) continue;
-        else return false
-    }  
-    return true
+
+export function filterByTypes([selectedTypes, filtered]) {
+    for (const type of selectedTypes) {
+        for(const types of filtered) {
+            if(types.includes(type)) continue;
+            else return false;
+        }
+
+    } return true;
 }
+
 
 export function filterPokemons(arrCompuesto) {
     return function(dispatch){
@@ -126,6 +131,21 @@ export function filterPokemons(arrCompuesto) {
         }
     }
 }
+
+export function addCapture (payload) {
+    return {
+        type: ADD_POKEMON_CAPTURED,
+        payload
+    }
+}
+
+export function removeCapture (payload) {
+    return {
+        type: REMOVE_POKEMON_CAPTURED,
+        payload
+    }
+}
+
 // export function filterPokemons(filters) {
 //     const types = getAllTypesArr()
 //     const pokemons = getAllPokemons()
